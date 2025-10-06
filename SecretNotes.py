@@ -1,10 +1,30 @@
 import tkinter as tk
-
+from tkinter import messagebox
 
 #Windows setting
 window = tk.Tk()
 window.title("Secret Notes")
 window.geometry("400x400")
+
+
+
+
+#Functions
+
+def save_encrypt():
+    title = title_entry.get()
+    secret = secret_text.get("1.0", tk.END).strip()
+    master_key=key_entry.get()
+
+#control
+    if not title or not secret or not master_key:
+        tk.messagebox.showerror("Error", "All fields are required")
+    return
+
+
+def decrypt():
+    pass
+
 
 
 
@@ -33,10 +53,10 @@ key_entry.pack(pady=5)
 btn_frame = tk.Frame(window)
 btn_frame.pack(pady=5)
 
-save_btn=tk.Button(btn_frame, text="Save & Encrypt")
+save_btn=tk.Button(btn_frame, text="Save & Encrypt", command=save_encrypt)
 save_btn.grid(row=0, column=0, padx=5, pady=5)
 
-decrypt_btn=tk.Button(btn_frame, text="Decrypt")
+decrypt_btn=tk.Button(btn_frame, text="Decrypt", command=decrypt)
 decrypt_btn.grid(row=0, column=1, padx=5, pady=5)
 
 window.mainloop()
