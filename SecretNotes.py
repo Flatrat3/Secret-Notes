@@ -18,21 +18,63 @@ def generate_key(password: str) -> bytes:
     digest = hashlib.sha256(password.encode()).digest()
     return base64.urlsafe_b64encode(digest)
 
-print(generate_key("Asim"))
+# Encrypt funksiyası
+def encrypt_message(message, password):
+    key=generate_key(password)
+    f = Fernet(key)
+    return f.encrypt(message.encode())
+
+# Decrypt funksiyası
+def decrypt_message(token, password):
+    try:
+        key = generate_key(password)
+        f = Fernet(key)
+        return f.decrypt(token).decode()
+    except Exception:
+        return None
+
+# Save & Encrypt button
+
+
+
 
 def save_encrypt():
     title = title_entry.get()
     secret = secret_text.get("1.0", tk.END).strip()
-    master_key=key_entry.get()
+    master_key = key_entry.get()
 
-#control
     if not title or not secret or not master_key:
-        tk.messagebox.showerror("Error", "All fields are required")
-    return
+        tk.messagebox.showerror("Error", "All fields are required!")
+        return
+
+    encrypted = encrypt_message(secret, master_key)
+
+    with open(f"{title}.secret", "wb") as f:
+        f.write(encrypted)
+
+    tk.messagebox.showinfo("Success", f"Note '{title}' encrypted and saved!")
 
 
 def decrypt():
-    pass
+    title = title_entry.get()
+    master_key = key_entry.get()
+
+    try:
+        with open(f"{title}.secret", "rb") as f:
+            encrypted = f.read()
+    except FileNotFoundError:
+        messagebox.showerror("Error", "File not found!")
+        return
+
+    decrypted = decrypt_message(encrypted, master_key)
+    if decrypted is None:
+        messagebox.showerror("Error", "Wrong master key!")
+    else:
+        secret_text.delete("1.0", tk.END)
+        secret_text.insert(tk.END, decrypted)
+        messagebox.showinfo("Success", f"Note '{title}' decrypted!")
+
+
 
 
 
