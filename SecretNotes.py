@@ -1,5 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
+from cryptography.fernet import Fernet
+import base64
+import hashlib
 
 #Windows setting
 window = tk.Tk()
@@ -10,6 +13,12 @@ window.geometry("400x400")
 
 
 #Functions
+
+def generate_key(password: str) -> bytes:
+    digest = hashlib.sha256(password.encode()).digest()
+    return base64.urlsafe_b64encode(digest)
+
+print(generate_key("Asim"))
 
 def save_encrypt():
     title = title_entry.get()
